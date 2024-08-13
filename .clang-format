@@ -1,0 +1,28 @@
+BasedOnStyle: LLVM
+IndentWidth: 4
+UseTab: Never
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+AllowShortBlocksOnASingleLine: false
+BraceWrapping:
+  AfterClass: true
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterObjCDeclaration: true
+  AfterStruct: true
+  AfterUnion: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: true
+  IndentBraces: false
+AlignAfterOpenBracket: BlockIndent
+MacroBlockBegin: "^ERR_NEG|\
+  ERR_0|\
+  ERR_WITH_RETRY|\
+  ERR_NEG_WITH_RETRY|\
+  ERR$"
+MacroBlockEnd: "^ERR_END|\
+  NULL_END$"
