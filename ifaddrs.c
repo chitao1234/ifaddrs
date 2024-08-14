@@ -197,18 +197,28 @@ static struct ifaddrs *getifaddrs_getlink(struct ifaddrs **ifap) {
         close(sockfd);
     NULL_END
 
+    struct iovec iov = {buf, DUMP_BUF_SIZE};
+    struct msghdr msg = {&sa, salen, &iov, 1, NULL, 0, 0};
+
     struct ifaddrs *ifp = *ifap;
 
     int finish = 0;
     while (!finish) {
         ssize_t len;
-        ERR_NEG_WITH_RETRY(
-            len = recvfrom(
-                sockfd, buf, DUMP_BUF_SIZE, 0, (struct sockaddr *)&sa, &salen
-            )
-        )
+        ERR_NEG_WITH_RETRY(len = recvmsg(sockfd, &msg, 0))
+            freeifaddrs(*ifap);
+            *ifap = NULL;
+            free(buf);
             close(sockfd);
         NULL_END
+
+        ERR(msg.msg_flags & MSG_TRUNC)
+            freeifaddrs(*ifap);
+            *ifap = NULL;
+            free(buf);
+            close(sockfd);
+        NULL_END
+
         for (struct nlmsghdr *nlh = buf; NLMSG_OK(nlh, len);
              nlh = NLMSG_NEXT(nlh, len)) {
             if (nlh->nlmsg_type == NLMSG_DONE) {
@@ -376,18 +386,31 @@ getifaddrs_getaddr(struct ifaddrs **ifap, bool use_getlink_result) {
         close(sockfd);
     NULL_END
 
+    struct iovec iov = {buf, DUMP_BUF_SIZE};
+    struct msghdr msg = {&sa, salen, &iov, 1, NULL, 0, 0};
+
     struct ifaddrs *ifp = *ifap;
 
     int finish = 0;
     while (!finish) {
         ssize_t len;
-        ERR_NEG_WITH_RETRY(
-            len = recvfrom(
-                sockfd, buf, DUMP_BUF_SIZE, 0, (struct sockaddr *)&sa, &salen
-            )
-        )
+
+        ERR_NEG_WITH_RETRY(len = recvmsg(sockfd, &msg, 0))
+            freeifaddrs(*ifap);
+            *ifap = NULL;
+            free(buf);
+            close(ioctl_sockfd);
             close(sockfd);
         NULL_END
+
+        ERR(msg.msg_flags & MSG_TRUNC)
+            freeifaddrs(*ifap);
+            *ifap = NULL;
+            free(buf);
+            close(ioctl_sockfd);
+            close(sockfd);
+        NULL_END
+
         for (struct nlmsghdr *nlh = buf; NLMSG_OK(nlh, len);
              nlh = NLMSG_NEXT(nlh, len)) {
             if (nlh->nlmsg_type == NLMSG_DONE) {
