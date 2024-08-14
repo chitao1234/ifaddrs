@@ -22,8 +22,7 @@
 #undef ifa_dstaddr
 #endif
 
-#include "ifaddrs.h"
-#include "ifaddrs_internal.h"
+#include <ifaddrs_internal.h>
 #include "macros.h"
 
 static bool is_zero(char *ptr, size_t size) {
