@@ -1,6 +1,10 @@
 #ifndef IFADDRS_H
 #define IFADDRS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct ifaddrs {
     struct ifaddrs *ifa_next;     /* Next item in list */
     char *ifa_name;               /* Name of interface */
@@ -20,5 +24,9 @@ struct ifaddrs {
 
 int getifaddrs(struct ifaddrs **ifap);
 void freeifaddrs(struct ifaddrs *ifa);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,8 +1,8 @@
 #include <errno.h>
 #include <fcntl.h>
+#include <linux/if_ether.h>
 #include <linux/netlink.h>
 #include <linux/rtnetlink.h>
-#include <netinet/if_ether.h>
 #include <netinet/in.h>
 #include <netpacket/packet.h>
 #include <stdio.h>
@@ -22,8 +22,8 @@
 #undef ifa_dstaddr
 #endif
 
-#include <ifaddrs_internal.h>
 #include "macros.h"
+#include <ifaddrs_internal.h>
 
 static bool is_zero(char *ptr, size_t size) {
     for (size_t i = 0; i < size; i++) {
